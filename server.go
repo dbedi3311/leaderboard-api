@@ -142,7 +142,7 @@ func main() {
 	// --> after testing, foo returns bar, redis client works.
 
 	//Define endpoints
-	router.HandleFunc("/submit-score/{username}/{score}", submitScoreHandler).Methods("POST")
+	router.HandleFunc("/submit-score", submitScoreHandler).Methods("POST")
 	router.HandleFunc("/leaderboard", getLeaderboardHandler).Methods("GET")
 	router.HandleFunc("/rank/{username}", getRankHandler).Methods("GET")
 
