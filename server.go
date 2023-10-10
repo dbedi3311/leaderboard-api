@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
@@ -16,6 +15,11 @@ const port string = ":8080"
 
 var ctx = context.Background()
 var client *redis.Client
+
+type ScoreSubmission struct {
+	Username string  `json:"username"`
+	Score    float64 `json:"score"`
+}
 
 func init() {
 	// make sure Redis client is running
@@ -30,15 +34,16 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func submitScoreHandler(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	username := params["username"]
-	score, err := strconv.ParseFloat(params["score"], 64)
+	fmt.Println("POST /submit-score")
+	var scoreSubmission ScoreSubmission
+
+	err := json.NewDecoder(r.Body).Decode(&scoreSubmission)
 	if err != nil {
-		http.Error(w, "Invalid score", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
 		return
 	}
-
-	fmt.Printf("POST /submit-score/%s/%f\n", username, score)
+	username := scoreSubmission.Username
+	score := scoreSubmission.Score
 
 	// Submit score to Redis Sorted Set
 	_, err = client.ZAdd(ctx, "leaderboard", &redis.Z{Score: score, Member: username}).Result()
