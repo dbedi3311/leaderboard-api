@@ -1,0 +1,90 @@
+definitions:
+  main.ScoreSubmission:
+    properties:
+      score:
+        type: number
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is a sample server Petstore server.
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /:
+    get:
+      description: Home endpoint returns an up and running message
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Up and running!\n
+          schema:
+            type: string
+      summary: Home endpoint
+      tags:
+      - home
+  /leaderboard:
+    get:
+      description: Get the top scores from the leaderboard
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      summary: Get leaderboard
+      tags:
+      - scores
+  /rank/{username}:
+    get:
+      description: Get the rank of a user by username
+      parameters:
+      - description: Username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get user rank
+      tags:
+      - scores
+  /submit-score:
+    post:
+      consumes:
+      - application/json
+      description: Submit a user score
+      parameters:
+      - description: Score Submission
+        in: body
+        name: scoreSubmission
+        required: true
+        schema:
+          $ref: '#/definitions/main.ScoreSubmission'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      summary: Submit score
+      tags:
+      - scores
+swagger: "2.0"

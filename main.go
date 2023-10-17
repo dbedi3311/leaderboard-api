@@ -7,9 +7,17 @@ import (
 	"log"
 	"net/http"
 
+	_ "github.com/leaderboard-api/docs"
+
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
+
+// @title Swagger Example API
+// @version 1.0
+// @description This is a sample server Petstore server.
+// @termsOfService http://swagger.io/terms/
 
 const port string = ":8080"
 
@@ -29,10 +37,26 @@ func init() {
 	})
 }
 
+// HomeHandler godoc
+// @Summary Home endpoint
+// @Description Home endpoint returns an up and running message
+// @Tags home
+// @Produce  plain
+// @Success 200 {string} string "Up and running!\n"
+// @Router / [get]
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Up and running!\n"))
 }
 
+// submitScoreHandler godoc
+// @Summary Submit score
+// @Description Submit a user score
+// @Tags scores
+// @Accept  json
+// @Produce  json
+// @Param scoreSubmission body ScoreSubmission true "Score Submission"
+// @Success 201
+// @Router /submit-score [post]
 func submitScoreHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("POST /submit-score")
 	var scoreSubmission ScoreSubmission
@@ -55,6 +79,13 @@ func submitScoreHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// getLeaderboardHandler godoc
+// @Summary Get leaderboard
+// @Description Get the top scores from the leaderboard
+// @Tags scores
+// @Produce  json
+// @Success 200 {array} map[string]interface{}
+// @Router /leaderboard [get]
 func getLeaderboardHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("GET /leaderboard")
 
@@ -84,6 +115,15 @@ func getLeaderboardHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// getRankHandler godoc
+// @Summary Get user rank
+// @Description Get the rank of a user by username
+// @Tags scores
+// @Produce  json
+// @Param username path string true "Username"
+// @Success 200 {object} map[string]interface{}
+// @Failure 404 {object} map[string]interface{} "error"
+// @Router /rank/{username} [get]
 func getRankHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	username := params["username"]
@@ -145,6 +185,14 @@ func main() {
 	router.HandleFunc("/submit-score", submitScoreHandler).Methods("POST")
 	router.HandleFunc("/leaderboard", getLeaderboardHandler).Methods("GET")
 	router.HandleFunc("/rank/{username}", getRankHandler).Methods("GET")
+
+	// Serve Swagger UI
+	router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8080/swagger/doc.json"), //The url pointing to API definition
+		httpSwagger.DeepLinking(true),
+		httpSwagger.DocExpansion("none"),
+		httpSwagger.DomID("swagger-ui"),
+	)).Methods("GET")
 
 	// Host Server
 	fmt.Println("Server Running on", port)
