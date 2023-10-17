@@ -14,9 +14,9 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
-// @title Swagger Example API
+// @title Swagger Leaderboard API
 // @version 1.0
-// @description This is a sample server Petstore server.
+// @description This is an API to store scores and efficiently query for rankings
 // @termsOfService http://swagger.io/terms/
 
 const port string = ":8080"
