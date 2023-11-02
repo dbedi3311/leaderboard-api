@@ -62,6 +62,7 @@ func submitScoreHandler(w http.ResponseWriter, r *http.Request) {
 	var scoreSubmission ScoreSubmission
 
 	err := json.NewDecoder(r.Body).Decode(&scoreSubmission)
+	fmt.Printf("scoreSubmission: %v\n", scoreSubmission)
 	if err != nil {
 		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
 		return
