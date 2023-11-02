@@ -7,7 +7,7 @@ A leaderboard API to store scores and efficiently query for rankings. Built with
 - Documentation (OpenAPI standard, Swagger, code annotations)
 - Redis (Docker containerization, go-redis client)
 - JSON (marshalling)
-- Testing ()
+- Testing (Fuzzy Testing, A/B Testing)
 
 ### For personal reference:
 Make sure you have swaggo installed on your machine:
@@ -22,7 +22,7 @@ swagger.json and swagger.yaml should now reside under the docs folder.
 
 
 ### TODOs:
-- [ ] testing framework for the API
+- [X] testing framework for the API
 - [ ] add endpoint for rangequery
 - [ ] incorporate pagination, filtering properties
 - [ ] make server run on goroutine, add timeout functionality
